@@ -3,8 +3,8 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { BsTrash } from "react-icons/bs";
 import { PiNotePencil } from "react-icons/pi";
-import ProductUpdateModal from "./ProductUpdateModal";
 import { toast } from "react-toastify";
+import SupplierUpdateModal from "./SupplierUpdateModal";
 
 const SupplierList = () => {
   const navigate = useNavigate();
@@ -175,15 +175,15 @@ const SupplierList = () => {
           </tbody>
         </table>
       </div>
-      {/* Modal for updating a product */}
-      {/* {selectedSupplier && (
-        <ProductUpdateModal
-          product={selectedSupplier}
+      {/* Modal for updating a supplier */}
+      {selectedSupplier && (
+        <SupplierUpdateModal
+          supplier={selectedSupplier}
           isOpen={isModalOpen}
           onClose={handleCloseModal}
           onUpdate={handleUpdate}
         />
-      )} */}
+      )}
     </>
   );
 };

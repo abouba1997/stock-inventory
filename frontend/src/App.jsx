@@ -16,9 +16,10 @@ import Menu from "./components/Menu";
 import CategoryList from "./components/CategoryList";
 import ClientList from "./components/ClientList";
 import SupplierList from "./components/SupplierList";
-import Sell from "./components/Sell";
 import SupplierDetails from "./components/SupplierDetails";
 import SupplierForm from "./components/SupplierForm";
+import ClientForm from "./components/ClientForm";
+import SellingPage from "./components/SellingPage";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -31,10 +32,11 @@ const router = createBrowserRouter(
         <Route path="/products/:productId" element={<ProductDetails />} />
         <Route path="/category-list" element={<CategoryList />} />
         <Route path="/clients-list" element={<ClientList />} />
+        <Route path="/add-client" element={<ClientForm />} />
         <Route path="/suppliers-list" element={<SupplierList />} />
         <Route path="/add-supplier" element={<SupplierForm />} />
         <Route path="/suppliers/:supplierId" element={<SupplierDetails />} />
-        <Route path="/sell-list" element={<Sell />} />
+        <Route path="/sell-list" element={<SellingPage />} />
         <Route path="*" element={<NotFound />} />
         <Route path="/login" element={<Login />} />
       </Route>

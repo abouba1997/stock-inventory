@@ -196,7 +196,7 @@ const SupplierForm = () => {
                 to="/suppliers-list"
                 className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 focus:outline-none focus:ring focus:border-blue-300"
               >
-                Annuler
+                Retour liste des fournisseurs
               </Link>
             </div>
           </form>

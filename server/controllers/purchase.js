@@ -1,31 +1,30 @@
-const CategoryModel = require("../models/Category");
+const PurchaseModel = require("../models/Purchase");
 
-const getAllCategories = async (req, res) => {
-  // Retrieve all users
+const getAllPurchases = async (req, res) => {
   try {
-    const results = await CategoryModel.findAll();
+    const results = await PurchaseModel.findAll();
     return res.status(201).json(results);
   } catch (error) {
     return res.status(500).json({ msg: "Erreur du serveur" });
   }
 };
 
-const getCategory = async (req, res) => {
-  const categoryId = req.params.id;
+const getPurchase = async (req, res) => {
+  const purchaseId = req.params.id;
   try {
-    const result = await CategoryModel.findById(categoryId);
+    const result = await PurchaseModel.findById(purchaseId);
     return res.status(201).json(result);
   } catch (error) {
     return res.status(500).json({ msg: "Erreur du serveur" });
   }
 };
 
-const createCategory = async (req, res) => {
-  const { category_name } = req.body;
+const createPurchase = async (req, res) => {
+  const { supplier_id, purchase_name, total } = req.body;
 
   try {
-    const createdCategory = await CategoryModel.create({ category_name });
-    if (createdCategory) {
+    const createdPurchase = await PurchaseModel.create({ purchase_name });
+    if (createdPurchase) {
       return res.status(201).json({ msg: "Categorie ajoutée avec succès" });
     }
     return res.status(400).json({ msg: "Echec de la creation de catégorie" });
@@ -35,16 +34,16 @@ const createCategory = async (req, res) => {
   }
 };
 
-const updateCategory = async (req, res) => {
-  const categoryId = req.params.id;
-  const { category_name } = req.body;
+const updatePurchase = async (req, res) => {
+  const purchaseId = req.params.id;
+  const { purchase_name } = req.body;
 
   try {
-    const updatedCategory = await CategoryModel.update(categoryId, {
-      category_name,
+    const updatedPurchase = await PurchaseModel.update(purchaseId, {
+      purchase_name,
     });
 
-    if (updatedCategory) {
+    if (updatedPurchase) {
       return res.status(200).send("Categorie mise à jour avec succès");
     }
     res.status(400).send("Echec de la mise à jour de catégorie");
@@ -54,13 +53,13 @@ const updateCategory = async (req, res) => {
   }
 };
 
-const deleteCategory = async (req, res) => {
-  const categoryId = req.params.id;
+const deletePurchase = async (req, res) => {
+  const purchaseId = req.params.id;
 
   try {
-    const deletedCategory = CategoryModel.delete(categoryId);
+    const deletedPurchase = PurchaseModel.delete(purchaseId);
 
-    if (deletedCategory) {
+    if (deletedPurchase) {
       return res.status(200).send("Catégorie supprimée avec succès");
     }
 
@@ -72,9 +71,9 @@ const deleteCategory = async (req, res) => {
 };
 
 module.exports = {
-  getAllCategories,
-  getCategory,
-  createCategory,
-  updateCategory,
-  deleteCategory,
+  getAllPurchases,
+  getPurchase,
+  createPurchase,
+  updatePurchase,
+  deletePurchase,
 };

@@ -2,8 +2,11 @@ const express = require("express");
 const cors = require("cors");
 const productsRouter = require("./routes/product");
 const suppliersRouter = require("./routes/supplier");
+const clientsRouter = require("./routes/client");
 const categoriesRouter = require("./routes/category");
 const userRouter = require("./routes/user");
+const salesRouter = require("./routes/sale");
+const paymentMethodRouter = require("./routes/payment_method");
 
 const app = express();
 app.use(cors());
@@ -18,11 +21,18 @@ app.use("/users", userRouter);
 // Use the products router
 app.use("/products", productsRouter);
 
-// Use the products router
+// Use the suppliers router
 app.use("/suppliers", suppliersRouter);
+
+// Use the clients router
+app.use("/clients", clientsRouter);
 
 // Use the categories router
 app.use("/categories", categoriesRouter);
+
+app.use("/payment_methods", paymentMethodRouter);
+
+app.use("/sales", salesRouter);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
