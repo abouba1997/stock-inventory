@@ -83,10 +83,22 @@ const deleteSaleItem = async (req, res) => {
   }
 };
 
+const getAllSaleItemsBySaleId = async (req, res) => {
+  const sale_id = req.params.id;
+
+  try {
+    const results = await SaleItemModel.findAllBySaleId(sale_id);
+    return res.status(201).json(results);
+  } catch (error) {
+    return res.status(500).json({ msg: "Erreur du serveur" });
+  }
+};
+
 module.exports = {
   getAllSaleItems,
   getSaleItem,
   createSaleItem,
   updateSaleItem,
   deleteSaleItem,
+  getAllSaleItemsBySaleId,
 };

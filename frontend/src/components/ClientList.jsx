@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { BsTrash } from "react-icons/bs";
 import { PiNotePencil } from "react-icons/pi";
 import { toast } from "react-toastify";
 import ClientUpdateModal from "./ClientUpdateModal";
 
 const ClientList = () => {
-  const navigate = useNavigate();
   const [clients, setClients] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [selectedClient, setSelectedClient] = useState(clients[0]);
@@ -79,10 +78,6 @@ const ClientList = () => {
     setSelectedClient(null);
   };
 
-  const handleRowClick = (supplierId) => {
-    navigate(`/clients/${supplierId}`);
-  };
-
   return (
     <>
       <div className="container mx-auto pt-4">
@@ -139,11 +134,7 @@ const ClientList = () => {
           </thead>
           <tbody>
             {clients.map((client) => (
-              <tr
-                key={client.id}
-                className="border-t hover:bg-slate-400"
-                onClick={() => handleRowClick(client.id)}
-              >
+              <tr key={client.id} className="border-t hover:bg-slate-200">
                 <td className="p-2 text-center">{client.client_name}</td>
                 <td className="p-2 text-center">{client.client_contact}</td>
                 <td className="p-2 text-center">{client.client_email}</td>

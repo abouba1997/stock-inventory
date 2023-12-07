@@ -1,41 +1,115 @@
 const BaseSQLModel = require("./BaseSQLModel");
 const SaleItemModel = require("./SaleItem");
+const ProductModel = require("./Product");
+const pool = require("../helpers/db");
 
-// Create a new class for a specific table
 class SaleModel extends BaseSQLModel {
   static tableName = "Sales";
 
+  static async create(data, connection) {
+    const query = `INSERT INTO ${this.tableName} SET ?`;
+    const [result] = await connection.query(query, data);
+    return result.insertId;
+  }
+
   static async createSaleTransaction(saleData, saleItemsData) {
+    let connection;
+
     try {
-      // Begin transaction
-      console.log("saleData =>", saleData);
-      await this.executeQuery("START TRANSACTION");
+      // Get a connection from the pool
+      connection = await this.getConnection();
 
+      // Begin transaction using the connection
+      await this.startTransaction(connection);
+
+      // Set isolation level for the current transaction
+      await this.setIsolationLevel(connection, "READ COMMITTED");
       // Insert sale data
-      const saleId = await this.create(saleData);
-
-      console.log("Operations success");
+      const saleId = await this.create(saleData, connection);
 
       // Insert sale items associated with the sale
       const saleItemsPromises = saleItemsData.map(async (saleItem) => {
+        const { product_id, quantity, unit_price } = saleItem;
+        const total_price = quantity * unit_price;
+
         const saleItemData = {
           ...saleItem,
-          sale_id: saleId, // Assuming there's a field sale_id in the SaleItems table linking to Sale table
+          sale_id: saleId,
+          total_price: total_price,
         };
-        await SaleItemModel.create(saleItemData); // Assuming SaleItemsModel is the model for sale items
+        const saleItemId = await SaleItemModel.createWithConnexion(
+          saleItemData,
+          connection
+        );
+
+        await this.decrementProductQuantity(product_id, quantity, connection);
       });
       await Promise.all(saleItemsPromises);
 
       // Commit transaction
-      await this.executeQuery("COMMIT");
+      await this.commitTransaction(connection);
 
-      console.log("Selling processed successfully");
       return saleId;
     } catch (error) {
       // Rollback transaction if an error occurs
-      await this.executeQuery("ROLLBACK");
+      await this.rollbackTransaction(connection);
+      throw error;
+    } finally {
+      // Release the connection back to the pool
+      if (connection) {
+        connection.release();
+      }
+    }
+  }
+
+  static async decrementProductQuantity(product_id, quantity, connection) {
+    try {
+      const [product] = await ProductModel.findByIdWithConnection(
+        product_id,
+        connection
+      );
+      if (product) {
+        const updatedQuantity = product.quantity_on_hand - quantity;
+        if (updatedQuantity >= 0) {
+          // Update product quantity
+          const result = await ProductModel.updateQuantityWithConnexion(
+            product_id,
+            updatedQuantity,
+            connection
+          );
+        } else {
+          throw new Error("Insufficient quantity on hand");
+        }
+      } else {
+        throw new Error("Product not found");
+      }
+    } catch (error) {
       throw error;
     }
+  }
+
+  // Other methods...
+
+  static async getConnection() {
+    return pool.getConnection();
+  }
+
+  static async startTransaction(connection) {
+    return connection.query("START TRANSACTION");
+  }
+
+  static async setIsolationLevel(connection, isolationLevel) {
+    return connection.query(
+      `SET SESSION TRANSACTION ISOLATION LEVEL ${isolationLevel}`
+    );
+  }
+
+  static async commitTransaction(connection) {
+    return connection.query("COMMIT");
+  }
+
+  static async rollbackTransaction(connection) {
+    return connection.query("ROLLBACK");
   }
 }
 

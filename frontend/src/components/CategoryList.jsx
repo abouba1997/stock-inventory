@@ -65,7 +65,7 @@ const CategoryList = () => {
   };
 
   const handleRowClick = (categorieId) => {
-    navigate(`/category/${categorieId}`);
+    navigate(`/category-list/${categorieId}`);
   };
 
   const handleDelete = async (category_id, e) => {

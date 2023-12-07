@@ -64,7 +64,6 @@ const SupplierUpdateModal = ({ supplier, isOpen, onClose, onUpdate }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
     try {
       await axios.put(
         `http://localhost:5000/suppliers/${supplier.id}`,

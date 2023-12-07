@@ -8,8 +8,6 @@ const VerifyEmail = () => {
   const { user, verifyEmail, updateUser } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
 
-  console.log(user);
-
   useEffect(() => {
     const sendEmailVerification = async () => {
       if (user?.emailToken) {

@@ -56,7 +56,6 @@ const ProductUpdateModal = ({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
     try {
       await axios.put(
         `http://localhost:5000/products/${product.id}`,

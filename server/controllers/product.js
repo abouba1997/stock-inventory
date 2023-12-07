@@ -74,8 +74,6 @@ const updateProduct = async (req, res) => {
     supplier_id,
   } = req.body;
 
-  console.log(imagePath);
-
   try {
     if (imagePath) {
       await ProductModel.update(productId, {

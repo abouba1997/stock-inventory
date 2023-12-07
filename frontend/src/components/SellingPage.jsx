@@ -24,20 +24,25 @@ const initialSaleData = {
   total_price: "",
   received_amount: "",
   returned_amount: "",
+  user_id: "",
 };
 
 const SellingPage = () => {
   const { user } = useAuth();
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
   const [clients, setClients] = useState([]);
+  const [clientName, setClientName] = useState("");
   const [productsList, setProductsList] = useState([]);
   const [paymentMethods, setPaymentMethods] = useState([]);
+  const [paymentMethodName, setPaymentMethodName] = useState("");
   const [productsInList, setProductsInList] = useState([]);
   const [availableProducts, setAvailableProducts] = useState([]);
   const [formData, setFormData] = useState(initialState);
   const [saleData, setSaleData] = useState(initialSaleData);
   const [totalAmount, setTotalAmount] = useState(0);
+  const [saleId, setSaleId] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
+  const [stock, setStock] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -85,7 +90,6 @@ const SellingPage = () => {
     fetchPaymentMethods();
   }, []);
 
-  // Effect to recalculate totalAmount whenever productsInList changes
   useEffect(() => {
     const calculateTotalAmount = () => {
       let total = 0;
@@ -98,8 +102,32 @@ const SellingPage = () => {
     calculateTotalAmount();
   }, [productsInList]);
 
+  useEffect(() => {}, []);
+
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    if (name === "product_id") {
+      const selectedProduct = productsList.find(
+        (product) => product.id === parseInt(value)
+      );
+
+      if (selectedProduct) {
+        // Update form data with selected product details
+        setFormData({
+          ...formData,
+          [name]: value,
+          product_name: selectedProduct.product_name,
+          unit_price: selectedProduct.price,
+        });
+
+        // Set the remaining stock quantity
+        const stock = selectedProduct.quantity_on_hand || 0;
+        setStock(stock);
+      }
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
   };
 
   const handleSaleChange = (e) => {
@@ -205,6 +233,9 @@ const SellingPage = () => {
 
   const onClose = () => {
     setModalOpen(false);
+    setProductsInList([]);
+    setSaleData(initialSaleData);
+    setAvailableProducts(productsList);
   };
 
   const formattedDay = format(currentDateTime, "EEEE", { locale: fr });
@@ -223,22 +254,54 @@ const SellingPage = () => {
   );
 
   const validateSelling = async () => {
-    // try {
-    //   const response = await axios.post(
-    //     "http://localhost:5000/sales/save-sales",
-    //     {
-    //       salesData: { ...saleData, total_price: totalAmount },
-    //       salesItemsData: productsInList,
-    //     }
-    //   );
-    //   toast.success(response.data);
-    //   setProductsInList([]);
-    //   setSaleData(initialSaleData);
-    //   setAvailableProducts(productsList);
-    // } catch (error) {
-    //   console.error(error);
-    // }
-    setModalOpen(true);
+    const foundClient = clients.find(
+      (client) => client.id === parseInt(saleData.client_id)
+    );
+
+    const found_payment_method = paymentMethods.find(
+      (method) => method.id === parseInt(saleData.payment_method)
+    );
+
+    if (foundClient) {
+      setClientName(foundClient.client_name);
+    } else {
+      toast.error("Veuillez choisir un client");
+      return;
+    }
+
+    if (found_payment_method) {
+      setPaymentMethodName(found_payment_method.method_name);
+    } else {
+      toast.error("Veuillez choisir le type de paiement");
+      return;
+    }
+
+    if (productsInList.length <= 0) {
+      toast.error("Veuillez selectionner au moins un produit");
+      return;
+    }
+
+    if (!saleData.received_amount || isNaN(saleData.received_amount)) {
+      toast.error("Veuillez entrer le montant recu");
+      return;
+    }
+
+    await axios
+      .post("http://localhost:5000/sales/save-sales", {
+        salesData: { ...saleData, total_price: totalAmount, user_id: user.id },
+        salesItemsData: productsInList,
+      })
+      .then((response) => {
+        toast.success(response.data.msg);
+        setSaleId(response.data.sale_id);
+        if (response.data.sale_id) {
+          setModalOpen(true);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        toast.error(error.response.data);
+      });
   };
 
   const cancelSelling = () => {
@@ -360,9 +423,9 @@ const SellingPage = () => {
                     <input
                       type="number"
                       name="quantity"
-                      placeholder="00"
                       value={formData.quantity}
                       onChange={handleChange}
+                      min={1}
                       className="border rounded px-2 py-1 ml-2 w-20 text-center"
                     />
                   </div>
@@ -373,10 +436,9 @@ const SellingPage = () => {
                     <input
                       type="text"
                       name="tva"
-                      placeholder="25%"
                       value={formData.tva}
                       onChange={handleChange}
-                      className="border rounded px-2 py-1 ml-2 mr-4 w-20 text-center"
+                      className="border rounded px-2 py-1 ml-2 mr-4 w-20 text-center text-slate-400 focus:text-black"
                     />
                   </div>
                   <div className="flex items-center mr-5">
@@ -388,7 +450,23 @@ const SellingPage = () => {
                       placeholder="Remise"
                       value={formData.discount}
                       onChange={handleChange}
-                      className="border rounded px-2 py-1 ml-2 mr-4 w-32 text-center"
+                      min="1"
+                      className="border rounded px-2 py-1 ml-2 mr-4 w-32 text-center text-slate-400 focus:text-black"
+                    />
+                  </div>
+                  <div className="flex items-center mr-5">
+                    <label htmlFor="stock">Stock:</label>
+                    <input
+                      type="text"
+                      id="stock"
+                      name="stock"
+                      value={stock}
+                      readOnly
+                      className={`border rounded px-2 py-1 ml-2 mr-4 w-20 text-center font-semibold ${
+                        stock !== 0 && parseInt(stock) <= 5
+                          ? "bg-red-600 text-white"
+                          : "bg-slate-300"
+                      } focus:outline-none`}
                     />
                   </div>
                   <div className="flex items-center mr-0 xl:mr-5">
@@ -512,7 +590,9 @@ const SellingPage = () => {
               name="received_amount"
               id="received_amount"
               onChange={handleSaleChange}
-              value={saleData.received_amount}
+              value={
+                isNaN(saleData.received_amount) ? 0 : saleData.received_amount
+              }
               className="ml-2 px-2 py-1 border-2 rounded-md border-slate-400"
             />
             <span className="absolute right-8 top-[6px]">FCFA</span>
@@ -524,7 +604,9 @@ const SellingPage = () => {
               name="returned_amount"
               id="returned_amount"
               onChange={handleSaleChange}
-              value={saleData.returned_amount}
+              value={
+                isNaN(saleData.returned_amount) ? 0 : saleData.returned_amount
+              }
               className="ml-2 px-2 py-1 border-2 rounded-md border-slate-400"
             />
           </p>
@@ -548,12 +630,13 @@ const SellingPage = () => {
         <SoldModal
           productsInList={productsInList}
           totalAmount={totalAmount}
-          client={saleData.client_id}
-          paymentMethod={saleData.payment_method}
+          client_name={clientName}
+          paymentMethod={paymentMethodName}
           dateContent={dateContent}
           formattedTime={formattedTime}
           onClose={onClose}
           modalOpen={modalOpen}
+          sale_id={saleId}
         />
       )}
     </>

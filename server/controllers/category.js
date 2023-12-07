@@ -71,10 +71,22 @@ const deleteCategory = async (req, res) => {
   }
 };
 
+const getAllProductsByCategoryId = async (req, res) => {
+  const categoryId = req.params.id;
+
+  try {
+    const results = await CategoryModel.findAllByCategoryId(categoryId);
+    return res.status(201).json(results);
+  } catch (error) {
+    return res.status(500).json({ msg: "Erreur du serveur" });
+  }
+};
+
 module.exports = {
   getAllCategories,
   getCategory,
   createCategory,
   updateCategory,
   deleteCategory,
+  getAllProductsByCategoryId,
 };

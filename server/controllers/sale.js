@@ -74,34 +74,21 @@ const saveSales = async (req, res) => {
   const { salesData, salesItemsData } = req.body;
 
   try {
-    const {
-      client_id,
-      payment_method,
-      total_price,
-      received_amount,
-      returned_amount,
-    } = salesData;
+    const sale_id = await SaleModel.createSaleTransaction(
+      salesData,
+      salesItemsData
+    );
 
-    if (
-      !client_id &&
-      !payment_method &&
-      !total_price &&
-      !received_amount &&
-      !returned_amount &&
-      !salesItemsData.length
-    ) {
-      return res.send(400).send("Veuillez remplir toutes les champs");
+    if (sale_id) {
+      return res
+        .status(200)
+        .json({ msg: "Vente effectuée avec succès", sale_id: sale_id });
     } else {
-      const sale_id = SaleModel.createSaleTransaction(
-        salesData,
-        salesItemsData
-      );
-
-      res.status(200).send("Vente effectue avec succes");
+      return res.status(400).json("Vente non effectuée, problème survenu!!");
     }
   } catch (error) {
     console.error(error);
-    res.status(500).send("Erreur du serveur");
+    res.status(500).json("Erreur du serveur");
   }
 };
 
