@@ -6,7 +6,7 @@ const getAllCategories = async (req, res) => {
     const results = await CategoryModel.findAll();
     return res.status(201).json(results);
   } catch (error) {
-    return res.status(500).json({ msg: "Server error" });
+    return res.status(500).json({ msg: "Erreur du serveur" });
   }
 };
 
@@ -16,7 +16,7 @@ const getCategory = async (req, res) => {
     const result = await CategoryModel.findById(categoryId);
     return res.status(201).json(result);
   } catch (error) {
-    return res.status(500).json({ msg: "Server error" });
+    return res.status(500).json({ msg: "Erreur du serveur" });
   }
 };
 
@@ -26,12 +26,12 @@ const createCategory = async (req, res) => {
   try {
     const createdCategory = await CategoryModel.create({ category_name });
     if (createdCategory) {
-      return res.status(201).json({ msg: "Category creation successfully" });
+      return res.status(201).json({ msg: "Categorie ajoutée avec succès" });
     }
-    return res.status(400).json({ msg: "Category creation failed" });
+    return res.status(400).json({ msg: "Echec de la creation de catégorie" });
   } catch (error) {
     console.error(error);
-    res.status(500).send("Server Error");
+    res.status(500).send("Erreur du serveur");
   }
 };
 
@@ -45,12 +45,12 @@ const updateCategory = async (req, res) => {
     });
 
     if (updatedCategory) {
-      return res.status(200).send("Category updated successfully");
+      return res.status(200).send("Categorie mise à jour avec succès");
     }
-    res.status(400).send("Category updated failed");
+    res.status(400).send("Echec de la mise à jour de catégorie");
   } catch (error) {
     console.error(error);
-    res.status(500).send("Server Error");
+    res.status(500).send("Erreur du serveur");
   }
 };
 
@@ -61,13 +61,24 @@ const deleteCategory = async (req, res) => {
     const deletedCategory = CategoryModel.delete(categoryId);
 
     if (deletedCategory) {
-      return res.status(200).send("Category updated successfully");
+      return res.status(200).send("Catégorie supprimée avec succès");
     }
 
-    res.status(400).send("Category deletion failed");
+    res.status(400).send("Echec de la suppression de catégorie");
   } catch (error) {
     console.error(error);
-    res.status(500).send("Server Error");
+    res.status(500).send("Erreur du serveur");
+  }
+};
+
+const getAllProductsByCategoryId = async (req, res) => {
+  const categoryId = req.params.id;
+
+  try {
+    const results = await CategoryModel.findAllByCategoryId(categoryId);
+    return res.status(201).json(results);
+  } catch (error) {
+    return res.status(500).json({ msg: "Erreur du serveur" });
   }
 };
 
@@ -77,4 +88,5 @@ module.exports = {
   createCategory,
   updateCategory,
   deleteCategory,
+  getAllProductsByCategoryId,
 };

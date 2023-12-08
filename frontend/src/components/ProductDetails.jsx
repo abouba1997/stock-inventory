@@ -7,6 +7,7 @@ const ProductDetails = () => {
   const { productId } = useParams();
   const [product, setProduct] = useState(null);
   const [category, setCategory] = useState(null);
+  const [supplier, setSupplier] = useState(null);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -21,6 +22,12 @@ const ProductDetails = () => {
           `http://localhost:5000/categories/${response.data.category_id}`
         );
         setCategory(categoryResponse.data.category_name);
+
+        // Fetch supplier details based on category_id
+        const supplierResponse = await axios.get(
+          `http://localhost:5000/suppliers/${response.data.supplier_id}`
+        );
+        setSupplier(supplierResponse.data.supplier_name);
       } catch (error) {
         console.error(error);
       }
@@ -67,9 +74,13 @@ const ProductDetails = () => {
               <span className="text-lg">Description: </span>
               <span className="text-base font-bold">{product.description}</span>
             </p>
-            <p>
+            <p className="mb-4">
               <span className="text-lg">Categorie: </span>
               <span className="text-base font-bold">{category}</span>
+            </p>
+            <p className="mb-4">
+              <span className="text-lg">Fournisseur: </span>
+              <span className="text-base font-bold">{supplier}</span>
             </p>
           </div>
         </div>

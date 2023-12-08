@@ -289,13 +289,13 @@ const ProductForm = () => {
                 type="submit"
                 className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300"
               >
-                Ajouter le fournisseur
+                Ajouter le produit
               </button>
               <Link
                 to="/products-list"
                 className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 focus:outline-none focus:ring focus:border-blue-300"
               >
-                Annuler
+                Retour liste des produits
               </Link>
             </div>
           </form>

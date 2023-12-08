@@ -16,9 +16,13 @@ import Menu from "./components/Menu";
 import CategoryList from "./components/CategoryList";
 import ClientList from "./components/ClientList";
 import SupplierList from "./components/SupplierList";
-import Sell from "./components/Sell";
 import SupplierDetails from "./components/SupplierDetails";
 import SupplierForm from "./components/SupplierForm";
+import ClientForm from "./components/ClientForm";
+import SellingPage from "./components/SellingPage";
+import SellHistory from "./components/SellHistory";
+import SellHistoryPopup from "./components/SellHistoryPopup";
+import CategoryInfo from "./components/CategoryInfo";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -30,13 +34,17 @@ const router = createBrowserRouter(
         <Route path="/add-product" element={<ProductForm />} />
         <Route path="/products/:productId" element={<ProductDetails />} />
         <Route path="/category-list" element={<CategoryList />} />
+        <Route path="/category-list/:category_id" element={<CategoryInfo />} />
         <Route path="/clients-list" element={<ClientList />} />
+        <Route path="/add-client" element={<ClientForm />} />
         <Route path="/suppliers-list" element={<SupplierList />} />
         <Route path="/add-supplier" element={<SupplierForm />} />
         <Route path="/suppliers/:supplierId" element={<SupplierDetails />} />
-        <Route path="/sell-list" element={<Sell />} />
-        <Route path="*" element={<NotFound />} />
+        <Route path="/sell-list" element={<SellingPage />} />
+        <Route path="/sell-history" element={<SellHistory />} />
+        <Route path="/sell-history/:sale_id" element={<SellHistoryPopup />} />
         <Route path="/login" element={<Login />} />
+        <Route path="*" element={<NotFound />} />
       </Route>
     </>
   )

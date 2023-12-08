@@ -2,11 +2,12 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { BsTrash } from "react-icons/bs";
 import { PiNotePencil } from "react-icons/pi";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import CategoryModal from "./CategoryModal";
 import { toast } from "react-toastify";
 
 const CategoryList = () => {
+  const navigate = useNavigate();
   const [searchText, setSearchText] = useState("");
   const [categories, setCategories] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -51,7 +52,8 @@ const CategoryList = () => {
     setShowModal(true);
   };
 
-  const handleUpdate = (category) => {
+  const handleUpdate = (category, e) => {
+    e.stopPropagation();
     setCategory(category);
     setMode("Editer");
     setShowModal(true);
@@ -62,7 +64,13 @@ const CategoryList = () => {
     setCategory(null);
   };
 
-  const handleDelete = async (category_id) => {
+  const handleRowClick = (categorieId) => {
+    navigate(`/category-list/${categorieId}`);
+  };
+
+  const handleDelete = async (category_id, e) => {
+    e.stopPropagation();
+
     try {
       await axios.delete(`http://localhost:5000/categories/${category_id}`);
       setCategories(
@@ -131,19 +139,20 @@ const CategoryList = () => {
               <tr
                 key={categorie.id}
                 className="border-t cursor-pointer hover:bg-slate-400"
+                onClick={() => handleRowClick(categorie.id)}
               >
                 <td className="p-2 text-center">{categorie.id}</td>
                 <td className="p-2 text-center">{categorie.category_name}</td>
                 <td className="p-2 text-center">
                   <button
                     className="px-1 py-1 mr-2 bg-red-500 text-white rounded-md hover:bg-red-600"
-                    onClick={() => handleDelete(categorie.id)}
+                    onClick={(e) => handleDelete(categorie.id, e)}
                   >
                     <BsTrash size={24} title="Supprimer ce produit" />
                   </button>
                   <button
                     className="px-1 py-1 bg-green-500 text-white rounded-md hover:bg-green-600"
-                    onClick={() => handleUpdate(categorie)}
+                    onClick={(e) => handleUpdate(categorie, e)}
                   >
                     <PiNotePencil size={24} title="Modifier ce produit" />
                   </button>

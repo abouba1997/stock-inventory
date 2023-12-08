@@ -32,7 +32,6 @@ class BaseSQLModel {
   static async update(id, data) {
     const query = `UPDATE ${this.tableName} SET ? WHERE id = ?`;
     const [result] = await this.executeQuery(query, [data, id]);
-    console.log(result);
     return result.affectedRows;
   }
 
@@ -40,6 +39,10 @@ class BaseSQLModel {
     const query = `DELETE FROM ${this.tableName} WHERE id = ?`;
     const [result] = await this.executeQuery(query, [id]);
     return result.affectedRows;
+  }
+
+  static async getConnection() {
+    return pool.getConnection();
   }
 }
 

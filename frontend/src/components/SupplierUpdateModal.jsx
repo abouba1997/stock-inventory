@@ -1,42 +1,50 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { Link } from "react-router-dom";
 import { FaTimes } from "react-icons/fa";
 
 const defaultFormData = {
-  product_name: "",
-  description: "",
-  price: "",
-  quantity_on_hand: "",
-  category_id: "",
-  supplier_id: "",
-  productImage: "",
+  supplier_name: "",
+  supplier_email: "",
+  supplier_contact: "",
+  supplier_address: "",
+  supplierImage: "",
 };
 
-const ProductUpdateModal = ({
-  product,
-  categories,
-  suppliers,
-  isOpen,
-  onClose,
-  onUpdate,
-}) => {
+const SupplierUpdateModal = ({ supplier, isOpen, onClose, onUpdate }) => {
   const [formData, setFormData] = useState({
     ...defaultFormData,
-    product_name: product.product_name || "",
-    description: product.description || "",
-    price: product.price || "",
-    quantity_on_hand: product.quantity_on_hand || "",
-    category_id: product.category_id || "",
-    supplier_id: product.supplier_id || "",
-    productImage: product.productImage || "",
+    supplier_name: supplier.supplier_name || "",
+    supplier_email: supplier.supplier_email || "",
+    supplier_contact: supplier.supplier_contact || "",
+    supplier_address: supplier.supplier_address || "",
+    supplierImage: supplier.supplierImage || "",
   });
   const [file, setFile] = useState(null);
 
+  useEffect(() => {
+    if (
+      supplier &&
+      supplier.supplier_name &&
+      supplier.supplier_email &&
+      supplier.supplier_address &&
+      supplier.supplier_contact
+    ) {
+      setFormData({
+        ...defaultFormData,
+        supplier_name: supplier.supplier_name,
+        supplier_email: supplier.supplier_email,
+        supplier_contact: supplier.supplier_contact,
+        supplier_address: supplier.supplier_address,
+      });
+    } else {
+      setFormData(defaultFormData);
+    }
+  }, [supplier]);
+
   const handleChange = (e) => {
-    if (e.target.name === "productImage") {
+    if (e.target.name === "supplierImage") {
       const uploadedFile = e.target.files[0];
       if (uploadedFile) {
         const reader = new FileReader();
@@ -44,10 +52,10 @@ const ProductUpdateModal = ({
           setFile(reader.result);
         };
         reader.readAsDataURL(uploadedFile);
-        setFormData({ ...formData, productImage: uploadedFile });
+        setFormData({ ...formData, supplierImage: uploadedFile });
       } else {
         setFile(null);
-        setFormData({ ...formData, productImage: null });
+        setFormData({ ...formData, supplierImage: null });
       }
     } else {
       setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -58,7 +66,7 @@ const ProductUpdateModal = ({
     e.preventDefault();
     try {
       await axios.put(
-        `http://localhost:5000/products/${product.id}`,
+        `http://localhost:5000/suppliers/${supplier.id}`,
         formData,
         {
           headers: {
@@ -70,7 +78,7 @@ const ProductUpdateModal = ({
       setFile(null);
       onUpdate();
       onClose();
-      toast.success("Produit mise a jour avec succes!");
+      toast.success("Fournisseur mise a jour avec succes!");
     } catch (error) {
       console.error(error);
     }
@@ -80,11 +88,11 @@ const ProductUpdateModal = ({
 
   return (
     <div
-      className="absolute left-[50%] top-2 translate-x-[-50%] w-full bg-black/60 pb-4"
+      className="absolute left-[50%] top-2 translate-x-[-50%] w-full bg-black/60 pb-4 h-screen"
       onClick={onClose}
     >
       <div
-        className="bg-white w-full md:max-w-md mx-auto py-4 px-10 rounded-md relative mt-6"
+        className="bg-white w-full md:max-w-md mx-auto py-4 px-10 rounded-md relative translate-y-[-50%] top-[50%]"
         onClick={(e) => e.stopPropagation()}
       >
         <span
@@ -94,7 +102,7 @@ const ProductUpdateModal = ({
           <FaTimes size={24} />
         </span>
         <h2 className="text-lg text-center font-semibold pb-2">
-          Mettre a jour le {product.product_name}{" "}
+          Mettre a jour le {supplier.supplier_name}{" "}
         </h2>
         <form onSubmit={handleSubmit} className="w-full md:max-w-md mx-auto">
           <div className="flex items-center justify-center w-full mb-3 flex-col">
@@ -107,7 +115,7 @@ const ProductUpdateModal = ({
                 />
               ) : (
                 <img
-                  src={`http://localhost:5000/${product.imagePath}`}
+                  src={`http://localhost:5000/${supplier.imagePath}`}
                   alt="Uploaded Image"
                   className="object-cover h-full w-full rounded-md"
                 />
@@ -137,8 +145,8 @@ const ProductUpdateModal = ({
                 </div>
                 <div className="text-sm text-gray-500 flex flex-col text-center w-11/12">
                   <span className="font-semibold">
-                    Ajouter une image du produit ou glisser et deposer la photo
-                    du produit
+                    Ajouter une image/logo du fournisseur ou glisser et deposer
+                    la photo du fournisseur
                   </span>
                   <span> SVG, PNG, JPG</span>
                 </div>
@@ -154,157 +162,81 @@ const ProductUpdateModal = ({
           </div>
           <div className="mb-3">
             <label
-              htmlFor="product_name"
+              htmlFor="supplier_name"
               className="block text-gray-700 font-bold mb-2"
             >
-              Nom du produit
+              Nom du fournisseur
             </label>
             <input
               type="text"
-              id="product_name"
-              name="product_name"
-              value={formData.product_name}
+              id="supplier_name"
+              name="supplier_name"
+              value={formData.supplier_name}
               onChange={handleChange}
               className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
-              placeholder="Entrez le nom du produit"
+              placeholder="Entrez le nom du fournisseur"
               required
             />
           </div>
           <div className="mb-3">
             <label
-              htmlFor="description"
+              htmlFor="supplier_email"
               className="block text-gray-700 font-bold mb-2"
             >
-              Description du produit
-            </label>
-            <textarea
-              id="description"
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
-              placeholder="Entrez une bref description du produit"
-              rows="3"
-              required
-            ></textarea>
-          </div>
-          <div className="mb-3">
-            <label
-              htmlFor="price"
-              className="block text-gray-700 font-bold mb-2"
-            >
-              Prix du produit
+              Email du fournisseur
             </label>
             <input
-              type="number"
-              id="price"
-              name="price"
-              value={formData.price}
+              type="email"
+              id="supplier_email"
+              name="supplier_email"
+              value={formData.supplier_email}
               onChange={handleChange}
               className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
-              placeholder="Entrez le prix du produit"
+              placeholder="Entrez l'email du fournisseur"
               required
             />
           </div>
           <div className="mb-3">
             <label
-              htmlFor="quantity_on_hand"
+              htmlFor="supplier_contact"
               className="block text-gray-700 font-bold mb-2"
             >
-              Quantite du produit en stock
+              Contact du fournisseur
             </label>
             <input
-              type="number"
-              id="quantity_on_hand"
-              name="quantity_on_hand"
-              value={formData.quantity_on_hand}
+              type="text"
+              id="supplier_contact"
+              name="supplier_contact"
+              value={formData.supplier_contact}
               onChange={handleChange}
               className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
-              placeholder="Entrez la quantite du produit en stock"
+              placeholder="Entrez le contact du fournisseur"
               required
             />
           </div>
           <div className="mb-3">
-            <div>
-              <label
-                htmlFor="category_id"
-                className="block text-gray-700 font-bold mb-2"
-              >
-                Categorie du produit
-              </label>
-              <select
-                id="category_id"
-                name="category_id"
-                value={formData.category_id}
-                onChange={handleChange}
-                required
-                className="bg-white w-full px-3 py-3 border rounded-md focus:outline-none focus:ring focus:border-blue-300 cursor-pointer"
-              >
-                <option value="">Selectionner la categorie du produit</option>
-                {categories.map((category) => (
-                  <option
-                    key={category.id}
-                    value={category.id}
-                    className="w-full mx-3 my-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
-                  >
-                    {category.category_name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="text-sm mt-2 text-right">
-              <span>La categorie n&apos;existe pas?</span>
-              <Link
-                to="/category-list"
-                className="italic text-blue-500 ml-2 hover:underline transition-all duration-300"
-              >
-                Liste des categories
-              </Link>
-            </div>
-          </div>
-          <div className="mb-3">
-            <div>
-              <label
-                htmlFor="supplier_id"
-                className="block text-gray-700 font-bold mb-2"
-              >
-                Fournisseur du produit
-              </label>
-              <select
-                id="supplier_id"
-                name="supplier_id"
-                value={formData.supplier_id}
-                onChange={handleChange}
-                required
-                className="bg-white w-full px-3 py-3 border rounded-md focus:outline-none focus:ring focus:border-blue-300 cursor-pointer"
-              >
-                <option value="">Selectionner la categorie du produit</option>
-                {suppliers.map((supplier) => (
-                  <option
-                    key={supplier.id}
-                    value={supplier.id}
-                    className="w-full mx-3 my-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
-                  >
-                    {supplier.supplier_name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="text-sm mt-2 text-right">
-              <span>Le fournisseur n&apos;existe pas?</span>
-              <Link
-                to="/suppliers-list"
-                className="italic text-blue-500 ml-2 hover:underline transition-all duration-300"
-              >
-                Liste des fournisseurs
-              </Link>
-            </div>
+            <label
+              htmlFor="supplier_address"
+              className="block text-gray-700 font-bold mb-2"
+            >
+              L&apos;addresse du fournisseur
+            </label>
+            <input
+              type="text"
+              id="supplier_address"
+              name="supplier_address"
+              value={formData.supplier_address}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
+              placeholder="Entrez l'addresse du fournisseur"
+              required
+            />
           </div>
           <button
             type="submit"
             className="bg-blue-500 w-full text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300"
           >
-            Mettre a jour le produit
+            Mettre a jour le fournisseur
           </button>
         </form>
       </div>
@@ -312,4 +244,4 @@ const ProductUpdateModal = ({
   );
 };
 
-export default ProductUpdateModal;
+export default SupplierUpdateModal;

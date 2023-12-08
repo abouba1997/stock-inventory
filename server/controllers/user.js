@@ -10,7 +10,7 @@ const getAllUsers = async (req, res) => {
     const results = await UserModel.findAll();
     return res.status(201).json(results);
   } catch (error) {
-    return res.status(500).json({ msg: "Server error" });
+    return res.status(500).json({ msg: "Erreur du serveur" });
   }
 };
 
@@ -21,7 +21,7 @@ const getUser = async (req, res) => {
     const result = await UserModel.findById(id);
     return res.status(201).json(result);
   } catch (error) {
-    return res.status(500).json({ msg: "Server error" });
+    return res.status(500).json({ msg: "Erreur du serveur" });
   }
 };
 
@@ -43,7 +43,7 @@ const createUser = async (req, res) => {
     const user = await UserModel.findByColumnField("email", email);
 
     if (user) {
-      return res.status(404).json({ msg: "Cet utilisateur existe deja" });
+      return res.status(404).json({ msg: "Cet utilisateur existe déjà" });
     }
 
     // Creating new user
@@ -54,7 +54,7 @@ const createUser = async (req, res) => {
 
     return res.status(201).json(newUser);
   } catch (error) {
-    return res.status(500).json({ msg: "Server error", error });
+    return res.status(500).json({ msg: "Erreur du serveur", error });
   }
 };
 
@@ -68,14 +68,14 @@ const updateUser = async (req, res) => {
     if (!updatedUser) {
       return res
         .status(404)
-        .json({ msg: "Erreur de mise a jour de l'utilisateur" });
+        .json({ msg: "Erreur de mise à jour de l'utilisateur" });
     }
     // Get the created user
     const user = await UserModel.findById(id);
 
     return res.status(201).json(user);
   } catch (error) {
-    return res.status(500).json({ msg: "Server error", error });
+    return res.status(500).json({ msg: "Erreur du serveur", error });
   }
 };
 
@@ -89,9 +89,9 @@ const deleteUser = async (req, res) => {
         .status(404)
         .json({ msg: "Erreur de suppression de l'utilisateur" });
     }
-    return res.status(201).json({ msg: "Utilisateur supprime avec succes" });
+    return res.status(201).json({ msg: "Utilisateur supprime avec succès" });
   } catch (error) {
-    return res.status(500).json({ msg: "Server error", error });
+    return res.status(500).json({ msg: "Erreur du serveur", error });
   }
 };
 
@@ -149,7 +149,7 @@ const registerUser = async (req, res) => {
     });
   } catch (err) {
     console.error(err.message);
-    res.status(500).send("Server Error");
+    res.status(500).send("Erreur du serveur");
   }
 };
 
@@ -194,7 +194,7 @@ const loginUser = async (req, res) => {
     });
   } catch (err) {
     console.error(err.message);
-    res.status(500).send("Server Error");
+    res.status(500).send("Erreur du serveur");
   }
 };
 

@@ -12,7 +12,7 @@ const Menu = () => {
         <h1 className="text-4xl font-light italic mb-4">
           Bienvenue dans votre gestionnaire de stock
         </h1>
-        <span className="font-bold text-lg">{user.fullName}</span>
+        <span className="font-bold text-lg">{user && user.fullName}</span>
       </div>
       <div className="mb-4 flex items-center justify-center flex-col">
         <img src={HomePageIMG} alt="Logo" className="h-64" />
@@ -51,6 +51,12 @@ const Menu = () => {
           className="text-xl py-1 pl-2 border-b border-blue-600 bg-slate-300 mt-2 hover:bg-slate-400 transition-all duration-300 rounded-sm"
         >
           Ventes
+        </Link>
+        <Link
+          to="/sell-history"
+          className="text-xl py-1 pl-2 border-b border-blue-600 bg-slate-300 mt-2 hover:bg-slate-400 transition-all duration-300 rounded-sm"
+        >
+          Historiques des Ventes
         </Link>
       </div>
     </div>

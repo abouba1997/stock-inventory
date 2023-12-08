@@ -1,23 +1,23 @@
 const SupplierModel = require("../models/Supplier");
 
+// Retrieve all users
 const getAllSuppliers = async (req, res) => {
-  // Retrieve all users
   try {
     const results = await SupplierModel.findAll();
     return res.status(201).json(results);
   } catch (error) {
-    return res.status(500).json({ msg: "Server error" });
+    return res.status(500).json({ msg: "Erreur du serveur" });
   }
 };
 
+// Retrieve user by id
 const getSupplier = async (req, res) => {
-  // Retrieve user by id
   const { id } = req.params;
   try {
     const result = await SupplierModel.findById(id);
     return res.status(201).json(result);
   } catch (error) {
-    return res.status(500).json({ msg: "Server error" });
+    return res.status(500).json({ msg: "Erreur du serveur" });
   }
 };
 
@@ -44,10 +44,10 @@ const createSupplier = async (req, res) => {
         supplier_address,
       });
     }
-    return res.status(201).send("Supplier added successfully");
+    return res.status(201).send("Fournisseur ajouté avec succès");
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ msg: "Server error" });
+    return res.status(500).json({ msg: "Erreur du serveur" });
   }
 };
 
@@ -60,27 +60,25 @@ const updateSupplier = async (req, res) => {
 
   try {
     if (imagePath) {
-      await SupplierModel.update(productId, {
+      await SupplierModel.update(supplierId, {
         supplier_email,
         supplier_name,
         supplier_contact,
         supplier_address,
         imagePath,
-        supplierId,
       });
     } else {
-      await SupplierModel.update(productId, {
+      await SupplierModel.update(supplierId, {
         supplier_email,
         supplier_name,
         supplier_contact,
         supplier_address,
-        supplierId,
       });
     }
-    return res.status(200).send("Fournisseur mis a jour avec succes");
+    return res.status(200).send("Fournisseur mis à jour avec succès");
   } catch (error) {
     console.error(error);
-    res.status(500).send("Server Error");
+    res.status(500).send("Erreur du serveur");
   }
 };
 
@@ -95,8 +93,9 @@ const deleteSupplier = async (req, res) => {
         .status(404)
         .json({ msg: "Erreur de suppression de fournisseur" });
     }
+    return res.status(200).send("Fournisseur supprimé avec succès");
   } catch (error) {
-    return res.status(500).json({ msg: "Server error", error });
+    return res.status(500).json({ msg: "Erreur du serveur", error });
   }
 };
 

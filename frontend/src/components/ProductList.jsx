@@ -9,6 +9,7 @@ const ProductList = () => {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [suppliers, setSuppliers] = useState([]);
   const [isGridView, setIsGridView] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(products[0]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -32,6 +33,17 @@ const ProductList = () => {
         console.error(error);
       }
     };
+
+    const fetchSuppliers = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/suppliers");
+        setSuppliers(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchSuppliers();
 
     fetchProducts();
     fetchCategories();
@@ -308,6 +320,7 @@ const ProductList = () => {
         <ProductUpdateModal
           product={selectedProduct}
           categories={categories}
+          suppliers={suppliers}
           isOpen={isModalOpen}
           onClose={handleCloseModal}
           onUpdate={handleUpdate}
