@@ -133,7 +133,6 @@ const registerUser = async (req, res) => {
 
     // Return the new created user
     const newCreatedUser = await UserModel.findById(createdUser_id);
-    console.log(newCreatedUser);
 
     // Send email to verify the email address
     // sendMail(newCreatedUser[0]);

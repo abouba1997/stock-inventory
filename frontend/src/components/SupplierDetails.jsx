@@ -21,7 +21,6 @@ const SupplierDetails = () => {
         const productLists = await axios.get(
           `http://localhost:5000/products/supplier/${supplierId}`
         );
-        console.log(productLists.data);
         setProducts(productLists.data);
       } catch (error) {
         console.error(error);
@@ -50,15 +49,15 @@ const SupplierDetails = () => {
 
   return (
     <>
-      <div className="container mx-auto p-8 flex flex-row">
-        <div className="w-1/2">
+      <div className="container mx-auto p-4 pt-6 flex flex-row max-w-screen-xl gap-8">
+        <div className="w-1/3">
           <div className="max-w-2xl mx-auto bg-white shadow-md rounded-md overflow-hidden">
             <img
               src={`http://localhost:5000/${supplier.imagePath}`}
               alt={supplier.supplier_name}
-              className="w-full h-64 object-contain sm:h-80 md:h-96"
+              className="w-full h-48 object-cover sm:h-64 md:h-72"
             />
-            <div className="p-6">
+            <div className="p-3">
               <h2 className="text-2xl font-bold mb-4">
                 {supplier.supplier_name}
               </h2>
@@ -83,17 +82,48 @@ const SupplierDetails = () => {
               to="/suppliers-list"
               className="py-2 px-4 bg-blue-400 rounded-md hover:bg-blue-600 text-white transition-all duration-300"
             >
-              Retour a la Liste des fournisseurs
+              Retourner à la liste des fournisseurs
             </Link>
           </div>
         </div>
-        <div className="w-1/2">
-          <h2 className="text-xl font-semibold">
-            Liste des Produits par le fournisseur
+        <div className="w-2/3">
+          <h2 className="text-xl font-semibold mb-4">
+            Liste des produits fournis par le fournisseur:
+            <span className="font-bold underline ml-2">
+              {supplier.supplier_name}
+            </span>
           </h2>
-          {products.map((product) => (
-            <span key={product.id}>{product.product_name}</span>
-          ))}
+          <table className="border-collapse w-full">
+            <thead>
+              <tr className="border-t">
+                <th className="p-2">Image du produit</th>
+                <th className="p-2">Nom du produit</th>
+                <th className="p-2">Prix Unitaire du produit</th>
+                <th className="p-2">Quantité en stock</th>
+              </tr>
+            </thead>
+            <tbody>
+              {products.map((product) => (
+                <tr
+                  key={product.id}
+                  className="border-t cursor-pointer hover:bg-slate-400"
+                >
+                  <td className="p-2 flex items-center justify-center">
+                    <img
+                      src={`http://localhost:5000/${product.imagePath}`}
+                      alt={product.product_name}
+                      className="w-32 h-32 object-cover rounded-md"
+                    />
+                  </td>
+                  <td className="p-2 text-center">{product.product_name}</td>
+                  <td className="p-2 text-center">{product.price} FCFA</td>
+                  <td className="p-2 text-center">
+                    {product.quantity_on_hand} pieces
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </>

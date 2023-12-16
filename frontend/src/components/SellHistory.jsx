@@ -29,8 +29,6 @@ const SellHistory = () => {
       const response = await axios.get("http://localhost:5000/sales");
       const allSales = response.data;
 
-      console.log(allSales);
-
       if (searchText === "") {
         setSales(allSales);
       } else {
@@ -51,7 +49,7 @@ const SellHistory = () => {
 
   return (
     <>
-      <div className="container mx-auto pt-4">
+      <div className="container mx-auto py-4 max-w-screen-xl">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-bold col-span-full">
             L&apos;historique des ventes
@@ -77,8 +75,8 @@ const SellHistory = () => {
             </div>
             <input
               type="text"
-              className="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none"
-              placeholder="Recherche par vente ID..."
+              className="block w-64 p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none"
+              placeholder="Rechercher par vente ID..."
               value={searchText}
               onChange={(e) => handleSearchChange(e)}
             />

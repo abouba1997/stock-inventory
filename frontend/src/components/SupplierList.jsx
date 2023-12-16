@@ -85,7 +85,7 @@ const SupplierList = () => {
 
   return (
     <>
-      <div className="container mx-auto pt-4">
+      <div className="container mx-auto p-4 xl:p-0 xl:pt-4 max-w-screen-xl">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-bold col-span-full">
             La liste des fournisseurs
@@ -112,8 +112,8 @@ const SupplierList = () => {
             <input
               type="text"
               id="search-navbar"
-              className="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none"
-              placeholder="Recherche du produit..."
+              className="block w-80 p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none"
+              placeholder="Rechercher le nom du fournisseur..."
               value={searchText}
               onChange={handleSearchChange}
             />

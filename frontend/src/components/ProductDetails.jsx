@@ -67,7 +67,7 @@ const ProductDetails = () => {
               Prix: <span className="font-bold">{product.price} FCFA</span>
             </p>
             <p className="text-lg mb-4">
-              Quantity in Stock:{" "}
+              Quantite en stock:{" "}
               <span className="font-bold">{product.quantity_on_hand}</span>
             </p>
             <p className="mb-4">

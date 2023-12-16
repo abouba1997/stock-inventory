@@ -5,7 +5,6 @@ class CategoryModel extends BaseSQLModel {
   static tableName = "Categories";
 
   static async findAllByCategoryId(id) {
-    console.log("category id", id);
     const query = `SELECT * FROM Products WHERE category_id = ?`;
     const [results] = await this.executeQuery(query, [id]);
     return results;

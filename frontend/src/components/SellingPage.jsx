@@ -43,6 +43,7 @@ const SellingPage = () => {
   const [saleId, setSaleId] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
   const [stock, setStock] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -286,6 +287,8 @@ const SellingPage = () => {
       return;
     }
 
+    setLoading(true);
+
     await axios
       .post("http://localhost:5000/sales/save-sales", {
         salesData: { ...saleData, total_price: totalAmount, user_id: user.id },
@@ -294,11 +297,10 @@ const SellingPage = () => {
       .then((response) => {
         toast.success(response.data.msg);
         setSaleId(response.data.sale_id);
-        if (response.data.sale_id) {
-          setModalOpen(true);
-        }
+        setLoading(false);
       })
       .catch((error) => {
+        setLoading(false);
         console.error(error);
         toast.error(error.response.data);
       });
@@ -307,13 +309,16 @@ const SellingPage = () => {
   const cancelSelling = () => {
     setProductsInList([]);
     setAvailableProducts(productsList);
-    setModalOpen(true);
   };
+
+  if (!loading && saleId) {
+    setModalOpen(true);
+  }
 
   return (
     <>
       <div className="flex items-center justify-center h-full">
-        <div className="w-full mx-auto p-4 xl:px-10">
+        <div className="w-full mx-auto px-4 xl:px-10">
           <div className="mx-auto">
             <div className="flex items-center justify-between border-b-2 border-gray-900">
               <img
@@ -502,7 +507,7 @@ const SellingPage = () => {
                 </tr>
               </thead>
             </table>
-            <div className="h-96 overflow-y-auto">
+            <div className="h-64 overflow-y-auto">
               <table className="w-full table-fixed">
                 <tbody>
                   {productsInList.map((product) => (
@@ -615,7 +620,7 @@ const SellingPage = () => {
               className="py-2 px-4 bg-slate-500 rounded-md hover:bg-slate-600 transition-all text-white mr-4"
               onClick={validateSelling}
             >
-              Valider l&apos;achat
+              {loading ? "En cours de validation" : "Valider l'achat"}
             </button>
             <button
               className="py-2 px-4 bg-red-500 rounded-md hover:bg-red-600 transition-all text-white"

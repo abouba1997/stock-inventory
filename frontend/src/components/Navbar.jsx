@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { FiLogIn, FiLogOut } from "react-icons/fi";
 import { CiViewList } from "react-icons/ci";
@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 const Navbar = () => {
   const { logoutUser, user } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogout = () => {
     logoutUser();
@@ -33,13 +34,15 @@ const Navbar = () => {
         <ul className="flex flex-col items-center p-0 font-medium border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white">
           {user ? (
             <li className="flex">
-              <Link
-                to="/menu"
-                className="bg-slate-600 mr-2 flex py-2 px-3 text-white rounded hover:bg-slate-700 md:hover:text-slate-50 transition-all duration-300"
-              >
-                <span>Menu</span>
-                <CiViewList className="ml-2" size={24} />
-              </Link>
+              {location.pathname !== "/menu" && (
+                <Link
+                  to="/menu"
+                  className="bg-slate-600 mr-2 flex py-2 px-3 text-white rounded hover:bg-slate-700 md:hover:text-slate-50 transition-all duration-300"
+                >
+                  <span>Menu</span>
+                  <CiViewList className="ml-2" size={24} />
+                </Link>
+              )}
               <button
                 onClick={handleLogout}
                 className="bg-slate-600 flex py-2 px-3 text-white rounded hover:bg-slate-700 md:hover:text-slate-50 transition-all duration-300"

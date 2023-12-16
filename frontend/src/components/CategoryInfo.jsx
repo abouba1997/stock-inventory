@@ -75,7 +75,7 @@ const CategoryInfo = () => {
 
   return (
     <>
-      <div className="container mx-auto pt-4">
+      <div className="container mx-auto pt-4 p-4 xl:p-0 xl:pt-4 max-w-screen-xl">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-bold col-span-full">
             Bienvenue dans la categorie: {category && category.category_name}
@@ -174,7 +174,7 @@ const CategoryInfo = () => {
           <>
             <div className="border-t pt-2 h-96 flex justify-center items-center">
               <span className="italic text-slate-950 text-xl">
-                Pas produits ajouter pour cette categorie!
+                Pas de produits ajoutés pour cette catégorie!
               </span>
             </div>
           </>

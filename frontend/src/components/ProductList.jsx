@@ -109,7 +109,7 @@ const ProductList = () => {
     <>
       {isGridView ? (
         <>
-          <div className="container mx-auto flex justify-between items-center my-4 px-4 md:px-0">
+          <div className="container mx-auto flex justify-between items-center my-4 px-4 md:px-0 max-w-screen-xl">
             <h2 className="text-2xl font-bold col-span-full">
               La liste des produits
             </h2>
@@ -135,8 +135,8 @@ const ProductList = () => {
               <input
                 type="text"
                 id="search-navbar"
-                className="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none"
-                placeholder="Recherche du produit..."
+                className="block w-80 p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none"
+                placeholder="Rechercher le nom du produit..."
                 value={searchText}
                 onChange={handleSearchChange}
               />
@@ -164,7 +164,7 @@ const ProductList = () => {
               </Link>
             </p>
           </div>
-          <div className="container mx-auto py-4 md:p-4 grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 px-4 md:px-0">
+          <div className="container mx-auto py-4 md:p-4 grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 px-4 md:px-0 max-w-screen-xl">
             {products.map((product) => (
               <Link
                 key={product.id}
@@ -210,7 +210,7 @@ const ProductList = () => {
           </div>
         </>
       ) : (
-        <div className="container mx-auto pt-4">
+        <div className="container mx-auto pt-4 max-w-screen-xl">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-2xl font-bold col-span-full">
               La liste des produits
@@ -237,8 +237,8 @@ const ProductList = () => {
               <input
                 type="text"
                 id="search-navbar"
-                className="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none"
-                placeholder="Recherche du produit..."
+                className="block w-80 p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none"
+                placeholder="Rechercher le nom du produit..."
                 value={searchText}
                 onChange={handleSearchChange}
               />

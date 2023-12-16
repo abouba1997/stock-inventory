@@ -22,8 +22,8 @@ const SoldModal = ({
   return (
     <>
       {modalOpen && (
-        <div className="absolute w-full bg-black/50 h-screen flex items-center justify-center cursor-pointer">
-          <div className="bg-white max-w-screen-sm p-4 rounded-md relative cursor-auto">
+        <div className="absolute w-full bg-black/50 h-full flex items-center justify-center cursor-pointer">
+          <div className="bg-white max-w-screen-sm p-4 rounded-md relative cursor-auto h-full mx-8 overflow-auto">
             <span
               className="absolute top-1 right-1 cursor-pointer"
               onClick={onClose}
