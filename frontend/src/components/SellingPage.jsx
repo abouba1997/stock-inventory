@@ -289,31 +289,52 @@ const SellingPage = () => {
 
     setLoading(true);
 
-    await axios
-      .post("http://localhost:5000/sales/save-sales", {
-        salesData: { ...saleData, total_price: totalAmount, user_id: user.id },
-        salesItemsData: productsInList,
-      })
-      .then((response) => {
-        toast.success(response.data.msg);
-        setSaleId(response.data.sale_id);
-        setLoading(false);
-      })
-      .catch((error) => {
-        setLoading(false);
-        console.error(error);
-        toast.error(error.response.data);
-      });
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/sales/save-sales",
+        {
+          salesData: {
+            ...saleData,
+            total_price: totalAmount,
+            user_id: user.id,
+          },
+          salesItemsData: productsInList,
+        }
+      );
+
+      toast.success(response.data.msg);
+      setSaleId(response.data.sale_id);
+
+      // After successful transaction, reset form data and show the modal
+      setModalOpen(true);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      console.error(error);
+      toast.error(error.response.data);
+    }
+
+    // await axios
+    //   .post("http://localhost:5000/sales/save-sales", {
+    //     salesData: { ...saleData, total_price: totalAmount, user_id: user.id },
+    //     salesItemsData: productsInList,
+    //   })
+    //   .then((response) => {
+    //     toast.success(response.data.msg);
+    //     setSaleId(response.data.sale_id);
+    //     setLoading(false);
+    //   })
+    //   .catch((error) => {
+    //     setLoading(false);
+    //     console.error(error);
+    //     toast.error(error.response.data);
+    //   });
   };
 
   const cancelSelling = () => {
     setProductsInList([]);
     setAvailableProducts(productsList);
   };
-
-  if (!loading && saleId) {
-    setModalOpen(true);
-  }
 
   return (
     <>
